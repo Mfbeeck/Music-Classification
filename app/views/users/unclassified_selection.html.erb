@@ -1,0 +1,23 @@
+<h1>Choose The Playlist You Want To Classify</h1>
+<table>
+  <tbody>
+    <tr>
+      <th>Playlist Name</th>
+      <th>Track Count</th>
+      <th>Owner</th>
+      <th>Playlist ID</th>
+    </tr>
+    <% @playlists.each do |playlist| %>
+      <tr>
+        <td><%=playlist.playlist_name%></td>
+        <td><%=playlist.track_count%></td>
+        <% if !playlist.owner.nil? %>
+          <td><%=playlist.owner%></td>
+        <% else %>
+          <td><%=playlist.owner_id%></td>
+        <% end %>
+        <td><%=playlist.playlist_id%></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

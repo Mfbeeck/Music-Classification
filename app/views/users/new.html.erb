@@ -1,0 +1,6 @@
+<h1>What Do You Want To Classify?</h1>
+<%= form_for @user do |f| %>
+  <%= f.select :classif_type, [['A Playlist Of Mine', 'playlist'], ['My Library', 'library']], prompt: 'Select One...' %>
+  <%#= f.hidden_field :oauth, :value => @oauth %>
+  <%= f.submit "Let's Go!"%>
+<% end %>
