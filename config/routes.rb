@@ -3,12 +3,17 @@ Rails.application.routes.draw do
 
   resources :users
   resources :sessions
+  resources :tracks, only: :index
+
   root to: 'users#splash'
   get '/auth/spotify/callback', to: 'users#new'
   get '/auth/spotify', as: 'spot_auth'
+  post 'get_tracks',   to: 'users#get_tracks'
 
   get    '/selection',   to: 'users#unclassified_selection'
-  get    '/class_playlists',   to: 'users#playlist_selection'
+  get    '/class_playlists',   to: 'users#choose_playlists'
+  get    '/choose',  to: 'users#choose_tracks'
+  get    '/classified',  to: 'users#classified'
 
   get    '/login',   to: 'sessions#new'
   post   '/login',   to: 'sessions#create'

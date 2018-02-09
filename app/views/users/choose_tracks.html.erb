@@ -1,0 +1,25 @@
+<h1>Choose The Playlists You Want To Classify Into</h1>
+<table>
+  <tbody>
+    <tr>
+      <th>Playlist Name</th>
+      <th>Track Count</th>
+      <th>Owner</th>
+    </tr>
+    <%= form_tag(get_tracks_path) do %>
+      <% @playlists.each do |playlist| %>
+        <tr>
+          <td><%=check_box_tag 'playlist_urls[]', playlist.playlist_url %></td>
+          <td><%=playlist.playlist_name%></td>
+          <td><%=playlist.track_count%></td>
+          <% if !playlist.owner.nil? %>
+            <td><%=playlist.owner%></td>
+          <% else %>
+            <td><%=playlist.owner_id%></td>
+          <% end %>
+        </tr>
+      <% end %>
+      <%= submit_tag "Start Classifying..." %>
+    <% end %>
+  </tbody>
+</table>

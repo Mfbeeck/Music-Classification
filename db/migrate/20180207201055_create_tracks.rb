@@ -1,8 +1,11 @@
-class CreateUnclassifiedtracks < ActiveRecord::Migration[5.1]
+class CreateTracks < ActiveRecord::Migration[5.1]
   def change
-    create_table :unclassifiedtracks do |t|
+    create_table :tracks do |t|
       t.string :pred_playlist
       t.string :pred_id
+      t.string :pred_proba
+      t.string :playlist_name
+      t.string :playlist_id
       t.string :track
       t.string :track_id
       t.string :artist_name
@@ -50,7 +53,7 @@ class CreateUnclassifiedtracks < ActiveRecord::Migration[5.1]
       t.integer :southern_hip_hop
       t.integer :rnb
       t.integer :classic_rock
-
+      t.boolean :unclassified, default: false
       t.timestamps
     end
   end

@@ -1,2 +1,0 @@
-class Unclassifiedtrack < ApplicationRecord
-end

@@ -5,18 +5,16 @@
       <th>Playlist Name</th>
       <th>Track Count</th>
       <th>Owner</th>
-      <th>Playlist ID</th>
     </tr>
     <% @playlists.each do |playlist| %>
       <tr>
-        <td><%=playlist.playlist_name%></td>
+        <td><%=link_to playlist.playlist_name, class_playlists_path(:play_id => playlist.playlist_id)%></td>
         <td><%=playlist.track_count%></td>
         <% if !playlist.owner.nil? %>
           <td><%=playlist.owner%></td>
         <% else %>
           <td><%=playlist.owner_id%></td>
         <% end %>
-        <td><%=playlist.playlist_id%></td>
       </tr>
     <% end %>
   </tbody>
