@@ -1,21 +1,7 @@
-<h1>Choose The Playlist You Want To Classify</h1>
-<table>
-  <tbody>
-    <tr>
-      <th>Playlist Name</th>
-      <th>Track Count</th>
-      <th>Owner</th>
-    </tr>
-    <% @playlists.each do |playlist| %>
-      <tr>
-        <td><%=link_to playlist.playlist_name, class_playlists_path(:play_id => playlist.playlist_id)%></td>
-        <td><%=playlist.track_count%></td>
-        <% if !playlist.owner.nil? %>
-          <td><%=playlist.owner%></td>
-        <% else %>
-          <td><%=playlist.owner_id%></td>
-        <% end %>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
+<h1 class="title">Choose The Playlist You Want To Classify</h1>
+<ul class="playlist-list">
+  <% @playlists.each do |playlist| %>
+    <li><%=link_to playlist.playlist_name, class_playlists_path(:play_id => playlist.playlist_id)%></li>
+    <br>
+  <% end %>
+</ul>

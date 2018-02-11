@@ -1,1 +1,43 @@
-<h1>Here Are Your Classified Tracks</h1>
+<div>
+  <% if @playlist %>
+    <h1>Classifying</h1>
+    <div><h3><%=@playlist.playlist_name%></h3></div>
+    <div>
+      <% @array_of_classifiers.each do |classifier|%>
+        <h3><%=classifier%></h3>
+      <% end %>
+    </div>
+    <%= link_to "Go!", classification_path %>
+  <% else %>
+    <h2>Predicted with <%= current_user.model %> model: <%= current_user.fit%> </h2>
+    <table>
+      <tbody>
+        <tr>
+          <th></th>
+          <th>Track</th>
+          <th>Artist</th>
+          <th>Predicted</th>
+          <th>Probability</th>
+        </tr>
+        <%= form_tag(pushing_tracks_path) do %>
+          <% @tracks.each do |track| %>
+            <tr>
+              <td>
+                <% if track.preview_url %>
+                  <%=audio_tag track.preview_url, autoplay: false, controls: true%>
+                <% end %>
+              </td>
+                <!-- <%#=audio_tag(track.preview_url, autoplay: false, controls: true)%></td> -->
+              <td><%=track.track%></td>
+              <td><%=track.artist_name%></td>
+              <td><%=select_tag 'playlist_ids[]', options_for_select(@playlists.collect{|x| [x.playlist_name,x.playlist_id]}.append(["Don't Classify", "None"]), track.pred_id)%></td>
+              <td><%=track.pred_proba.to_f.round(2)%></td>
+            </tr>
+          <% end %>
+          <%= submit_tag "Push To Playlists" %>
+        <% end %>
+      </tbody>
+    </table>
+
+  <% end %>
+</div>

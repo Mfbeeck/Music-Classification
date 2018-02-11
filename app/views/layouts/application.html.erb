@@ -9,10 +9,13 @@
   </head>
 
   <body>
-    <% if logged_in? %>
-      <%= link_to "Log out", logout_path, method: :delete %>
-    <% else %>
-    <% end %>
+    <nav>
+      <%#= flash[:notice] %>
+      <% if logged_in? %>
+        <%= link_to "Log out", logout_path, method: :delete, id: "logout-link" %>
+      <% else %>
+      <% end %>
+    </nav>
     <%= yield %>
   </body>
 </html>

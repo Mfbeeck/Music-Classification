@@ -1,6 +1,15 @@
-<h1>What Do You Want To Classify?</h1>
-<%= form_for @user do |f| %>
-  <%= f.select :classif_type, [['A Playlist Of Mine', 'playlist'], ['My Library', 'library']], prompt: 'Select One...' %>
-  <%#= f.hidden_field :oauth, :value => @oauth %>
-  <%= f.submit "Let's Go!"%>
-<% end %>
+<h1 class="title">What Would You Like To Classify?</h1>
+
+<div class="post-its-div">
+  <div class="mid-splash-postit">
+    <div class="splash-link-div">
+      <%= link_to "Playlist Of Mine", '/users?' + {classif_type: 'playlist'}.to_param, method: :post, id: "choose-links" %>
+    </div>
+  </div>
+
+  <div class="right-splash-postit">
+    <div class="splash-link-div">
+      <%= link_to "My Library", '/users?' + {classif_type: 'library'}.to_param, method: :post, id: "choose-links" %>
+    </div>
+  </div>
+</div>
