@@ -17,6 +17,6 @@ class SessionsController < ApplicationController
 	  session[:user_id] = nil
     user = User.find_by(id: @id)
     user.destroy
-	  redirect_to root_url, notice: 'Done Here!'
+	  redirect_to root_url
 	end
 end

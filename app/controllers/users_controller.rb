@@ -70,7 +70,7 @@ class UsersController < ApplicationController
         @play.user_id = current_user.id
         @play.save
       end
-      redirect_to selection_path, notice: 'Logged in!'
+      redirect_to selection_path
     end
   end
 
@@ -209,7 +209,7 @@ class UsersController < ApplicationController
         @track.user_id = current_user.id
         @track.save
       end
-      redirect_to classified_path
+      redirect_to classification_path
     else
       redirect_to choose_path, notice: "Please select a playlist"
     end
@@ -223,7 +223,7 @@ class UsersController < ApplicationController
     else
       playlist_ids = current_user.tracks.where(unclassified: false).group(:playlist_id).pluck(:playlist_id)
       @playlists = Playlist.where(playlist_id: playlist_ids)
-      @tracks = current_user.tracks.where(unclassified: true)
+      @tracks = current_user.tracks.where(unclassified: true).order(id: :asc)
     end
     #@tracks.to_csv
   end

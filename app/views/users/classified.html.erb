@@ -1,17 +1,30 @@
 <div>
   <% if @playlist %>
-    <h1>Classifying</h1>
-    <div><h3><%=@playlist.playlist_name%></h3></div>
-    <div>
-      <% @array_of_classifiers.each do |classifier|%>
-        <h3><%=classifier%></h3>
-      <% end %>
+    <h1 style="color: white" class="title">Classifying</h1>
+    <div class="post-its-div">
+      <div class="mid-splash-postit">
+        <div class="splash-link-div">
+          <div><h3><%=@playlist.playlist_name%></h3></div>
+        </div>
+      </div>
+
+      <div class="right-splash-postit">
+        <div class="splash-link-div">
+          <div>
+            <% @array_of_classifiers.each do |classifier|%>
+              <h3><%=classifier%></h3>
+            <% end %>
+          </div>
+        </div>
+      </div>
     </div>
-    <%= link_to "Go!", classification_path %>
+    <div style="position:relative">
+      <%= link_to "Go!", classification_path %>
+    </div>
   <% else %>
-    <h2>Predicted with <%= current_user.model %> model: <%= current_user.fit%> </h2>
-    <table>
-      <tbody>
+    <h1 class="title">Predicted With <%= current_user.model %> Model: <%= current_user.fit%> </h1>
+    <table id="table-tag">
+      <tbody id="predicted-table">
         <tr>
           <th></th>
           <th>Track</th>
@@ -34,7 +47,9 @@
               <td><%=track.pred_proba.to_f.round(2)%></td>
             </tr>
           <% end %>
-          <%= submit_tag "Push To Playlists" %>
+          <div id="playlists-submit">
+            <%= submit_tag "Push To Playlists" %>
+          </div>
         <% end %>
       </tbody>
     </table>

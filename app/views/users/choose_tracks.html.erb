@@ -14,18 +14,17 @@
         </tr>
       <% end %>
       <div id="playlists-submit">
-        <%= submit_tag "Import Music/Begin Classifying"%>
+        <%= submit_tag "Import Music & Classify"%>
       </div>
     <% end %>
   </tbody>
 </table>
 
 <script>
-  $(document).ready(function() {
-    $('.record_table tr').click(function(event) {
-      if (event.target.type !== 'checkbox') {
-        $(':checkbox', this).trigger('click');
-      }
-    });
-  });
+  $('.record-table tbody tr').click(function(){
+       $(this).find('input:checkbox').each(function() {
+           if(this.checked) this.checked = false; // toggle the checkbox
+           else this.checked = true;
+       })
+   });
 </script>
