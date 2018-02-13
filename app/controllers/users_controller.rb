@@ -26,6 +26,8 @@ class UsersController < ApplicationController
 
   def get_playlists
     @@oauth = request.env['omniauth.auth']
+    @@spotify_user = RSpotify::User.new(@@oauth)
+    @@rspotify_hash = @@spotify_user.to_hash
     if !@@oauth.nil?
       @spot_json = @@oauth.credentials
       @spot_user_info = @@oauth.info
@@ -252,12 +254,35 @@ class UsersController < ApplicationController
   end
 
   def pushing_tracks
-    raise
+    spotify_user = RSpotify::User.new(@@rspotify_hash)
+    playlist_ids = current_user.tracks.where(unclassified: false).group(:playlist_id).pluck(:playlist_id)
+    @playlists = Playlist.where(playlist_id: playlist_ids)
+    @unclassed_tracks = current_user.tracks.where(unclassified: true).order(id: :asc)
+    new_preds = params['playlist_ids']
+    @unclassed_tracks.each_with_index do |track, index|
+      track.pred_id = new_preds[index]
+      track.pred_playlist = current_user.playlists.where(playlist_id: new_preds[index])[0].playlist_name
+      track.save
+    end
+    @playlists.each do |playlist_obj|
+      @new_tracks = @unclassed_tracks.where(pred_id: playlist_obj.playlist_id)
+      playlist = RSpotify::Playlist.find(current_user.spotify_id, playlist_obj.playlist_id)
+      track_ids = @new_tracks.pluck(:track_id)
+      if track_ids.count > 0
+        tracks = RSpotify::Base.find(track_ids, 'track')
+        playlist.add_tracks!(tracks, position: nil)
+      end
+    end
     redirect_to complete_path
   end
 
   def complete
-
+    @predicted_playlists_types = current_user.tracks.where(unclassified: false).group(:playlist_name).pluck(:playlist_name).sort
+    predicted_playlists = current_user.tracks.where(unclassified: true).pluck(:pred_playlist)
+    @predicted_playlists_counts = []
+    for playlist in @predicted_playlists_types
+      @predicted_playlists_counts.append(predicted_playlists.count(playlist))
+    end
   end
   private
 

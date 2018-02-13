@@ -10,6 +10,7 @@ Rails.application.routes.draw do
   get '/auth/spotify', as: 'spot_auth'
   post 'get_tracks',   to: 'users#get_tracks'
   get '/get_playlists',   to: 'users#get_playlists'
+  get '/new',   to: 'users#new'
 
   get    '/selection',   to: 'users#unclassified_selection'
   get    '/class_playlists',   to: 'users#choose_playlists'

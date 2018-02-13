@@ -1,21 +1,24 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Autoclassify</title>
+    <title>AutoClassify</title>
     <%= csrf_meta_tags %>
     <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track' => true %>
     <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
-    <%= favicon_link_tag 'http://clipart-library.com/images/8Tznp7Koc.png', type: 'image/png'%>
+    <link rel="shortcut icon" href="https://s3.amazonaws.com/classificationproject/di45bEq5T.png" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <%= favicon_link_tag 'https://s3.amazonaws.com/classificationproject/di45bEq5T.png', type: 'image/png'%>
   </head>
 
   <body>
     <nav>
       <%#= flash[:notice] %>
       <% if logged_in? %>
-        <%= link_to "Log out", logout_path, method: :delete, id: "logout-link" %>
+        <%=link_to(image_tag("https://s3.amazonaws.com/classificationproject/Screen+Shot+2018-02-12+at+4.25.10+PM.png", id: "logout-img"), logout_path, method: :delete, class: "logout-link")%>
       <% else %>
       <% end %>
     </nav>
+    <br><br><br>
     <%= yield %>
   </body>
 </html>

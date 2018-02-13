@@ -36,60 +36,62 @@ def classify(spotify_id):
                                                              'southern_hip_hop', 'rnb', 'classic_rock']]
 
     train_data, test_data = train_test_split(train_set, test_size=0.4, random_state=42)
-    classes = pd.DataFrame(train_data.playlist_name.value_counts()).reset_index()
-    classes.columns = ['playlist', 'track_count']
-    classes.sort_values(by="track_count", ascending=False, inplace=True)
-    samples_num = classes.iloc[0,:].track_count
-    new_train = train_data[train_data.playlist_name == classes.iloc[0,:].playlist]
-    for playlist in list(classes.playlist)[1:]:
-        df = train_data[train_data.playlist_name == playlist]
-        rsamples = resample(df, n_samples = samples_num)
-        new_train = pd.concat([new_train, rsamples])
-    new_train.playlist_name.value_counts()
-    # Up Sampled Train Data
-    new_X = new_train.iloc[:, 1:].reset_index(drop=True)
-    new_scaled_x = scale(new_X)
-    new_y = new_train.iloc[:, 0].reset_index(drop=True)
-    # Test Data
-    test_X = test_data.iloc[:, 1:].reset_index(drop=True)
-    test_scaled_x = scale(test_X)
+
+    # Original train set
+    train_x = train_data.iloc[:, 1:].reset_index(drop=True)
+    train_y = train_data.iloc[:, 0].reset_index(drop=True)
+    scaled_train_x = scale(train_x)
+
+    # Holdout (test-set)
+    test_x = test_data.iloc[:, 1:].reset_index(drop=True)
+    test_scaled_x = scale(test_x)
     test_y = test_data.iloc[:, 0].reset_index(drop=True)
 
     # Unclassified dataset
     unclass_set_x = unclass_set
-    unclass_scaledx = scale(unclass_set)
-    # Searching for optimal value of K for KNN
-    k_range = list(range(1, 25))
-    k_scores = []
+    unclass_scaled_x = scale(unclass_set_x)
+
+    # Finding biggest class
+    classes = pd.DataFrame(train_data.playlist_name.value_counts()).reset_index()
+    classes.columns = ['playlist', 'track_count']
+    classes.sort_values(by="track_count", ascending=False, inplace=True)
+
+    # Searching for optimal value of K for KNN on train data
+    k_range = list(range(1, classes.loc[0,'track_count']//2))
+    train_scores = []
     for k in k_range:
         knn = KNeighborsClassifier(n_neighbors=k)
-        scores = cross_val_score(knn, new_scaled_x, new_y, cv=10, scoring='accuracy')
-        k_scores.append(scores.mean())
-    optimal_k_val = (k_range[k_scores.index(max(k_scores))])
+        knn.fit(scaled_train_x,train_y)
+        train_scores.append(accuracy_score(test_y, knn.predict(test_scaled_x)))
+    optimal_k_val = (k_range[train_scores.index(max(train_scores))])
 
     classifiers = [KNeighborsClassifier(n_neighbors=optimal_k_val), LogisticRegression(), GaussianNB(), SVC(), DecisionTreeClassifier(), RandomForestClassifier()]
     accuracies = []
-    knn = KNeighborsClassifier(n_neighbors=optimal_k_val).fit(new_scaled_x, new_y)
-    logreg = LogisticRegression().fit(new_scaled_x, new_y)
-    gnb = GaussianNB().fit(new_X, new_y)
-    svc = SVC(probability=True).fit(new_scaled_x, new_y)
-    # dtc = DecisionTreeClassifier().fit(new_scaled_x, new_y)
-    # rf = RandomForestClassifier().fit(new_scaled_x, new_y)
+    knn = KNeighborsClassifier(n_neighbors=optimal_k_val).fit(scaled_train_x, train_y)
+    logreg = LogisticRegression().fit(scaled_train_x, train_y)
+    gnb = GaussianNB().fit(train_x, train_y)
+    svc = SVC(probability=True).fit(scaled_train_x, train_y)
+    dtc = DecisionTreeClassifier().fit(scaled_train_x, train_y)
+    rf = RandomForestClassifier().fit(scaled_train_x, train_y)
 
-    classifiers = [knn, logreg, gnb, svc]
+    classifiers = [knn, logreg, gnb, svc, dtc]
 
     accuracies.append(("KNN(" + str(optimal_k_val) + " neighbors)", 0 , "{:.3f}".format(accuracy_score(test_y, knn.predict(test_scaled_x)))))
     accuracies.append(("Logistic Regression", 1, "{:.3f}".format(accuracy_score(test_y, logreg.predict(test_scaled_x)))))
-    accuracies.append(("Gaussian NB", 2, "{:.3f}".format(accuracy_score(test_y, gnb.predict(test_X)))))
+    accuracies.append(("Gaussian NB", 2, "{:.3f}".format(accuracy_score(test_y, gnb.predict(test_x)))))
     accuracies.append(("SVC", 3, "{:.3f}".format(accuracy_score(test_y, svc.predict(test_scaled_x)))))
-    # accuracies.append(("Decision Tree", 4, "{:.3f}".format(accuracy_score(test_y, dtc.predict(test_scaled_x)))))
-    # accuracies.append(("Random Forest", 5, "{:.3f}".format(accuracy_score(test_y, rf.predict(test_scaled_x)))))
+    accuracies.append(("Decision Tree", 4, "{:.3f}".format(accuracy_score(test_y, dtc.predict(test_scaled_x)))))
+    accuracies.append(("Random Forest", 5, "{:.3f}".format(accuracy_score(test_y, rf.predict(test_scaled_x)))))
     reg_scores = sorted(accuracies, key=lambda x: x[2], reverse=True)
 
     # Applying winning fit to predict
     fit = classifiers[reg_scores[0][1]]
-    predictions = list(fit.predict(unclass_scaledx))
-    predprobs = fit.predict_proba(unclass_scaledx).max(axis=1)
+    if reg_scores[0][1] == 2:
+        predictions = list(fit.predict(unclass_set_x))
+        predprobs = fit.predict_proba(unclass_set_x).max(axis=1)
+    else:
+        predictions = list(fit.predict(unclass_scaled_x))
+        predprobs = fit.predict_proba(unclass_scaled_x).max(axis=1)
 
     json_data = {}
     json_data["predprobs"] = predprobs.tolist()

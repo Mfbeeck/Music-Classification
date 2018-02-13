@@ -1,0 +1,7 @@
+<h1 class="title">Finished Classifying</h1>
+<ul class="predicted-list">
+  <% @predicted_playlists_types.each_with_index do |playlist, index| %>
+    <li><%=@predicted_playlists_counts[index]%> Songs <i class="fa fa-arrow-right" style="font-size:1.8vw;color:#fbea76"></i> <%=playlist%></li>
+    <br>
+  <% end %>
+</ul>
