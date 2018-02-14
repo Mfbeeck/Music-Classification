@@ -74,10 +74,10 @@ def classify(spotify_id):
     dtc = DecisionTreeClassifier().fit(scaled_train_x, train_y)
     rf = RandomForestClassifier().fit(scaled_train_x, train_y)
 
-    classifiers = [knn, logreg, gnb, svc, dtc]
+    classifiers = [gnb, svc, dtc, rf]
 
-    accuracies.append(("KNN(" + str(optimal_k_val) + " neighbors)", 0 , "{:.3f}".format(accuracy_score(test_y, knn.predict(test_scaled_x)))))
-    accuracies.append(("Logistic Regression", 1, "{:.3f}".format(accuracy_score(test_y, logreg.predict(test_scaled_x)))))
+    # accuracies.append(("KNN(" + str(optimal_k_val) + " neighbors)", 0 , "{:.3f}".format(accuracy_score(test_y, knn.predict(test_scaled_x)))))
+    # accuracies.append(("Logistic Regression", 1, "{:.3f}".format(accuracy_score(test_y, logreg.predict(test_scaled_x)))))
     accuracies.append(("Gaussian NB", 2, "{:.3f}".format(accuracy_score(test_y, gnb.predict(test_x)))))
     accuracies.append(("SVC", 3, "{:.3f}".format(accuracy_score(test_y, svc.predict(test_scaled_x)))))
     accuracies.append(("Decision Tree", 4, "{:.3f}".format(accuracy_score(test_y, dtc.predict(test_scaled_x)))))

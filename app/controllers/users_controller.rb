@@ -261,8 +261,12 @@ class UsersController < ApplicationController
     new_preds = params['playlist_ids']
     @unclassed_tracks.each_with_index do |track, index|
       track.pred_id = new_preds[index]
-      track.pred_playlist = current_user.playlists.where(playlist_id: new_preds[index])[0].playlist_name
-      track.save
+      begin
+        track.pred_playlist = current_user.playlists.where(playlist_id: new_preds[index])[0].playlist_name
+        track.save
+      rescue
+        puts "hi"
+      end
     end
     @playlists.each do |playlist_obj|
       @new_tracks = @unclassed_tracks.where(pred_id: playlist_obj.playlist_id)
